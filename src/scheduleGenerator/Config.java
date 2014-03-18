@@ -48,6 +48,11 @@ public class Config extends javax.swing.JFrame {
 		 * Note: The original code was using sundayJobList for all days, which
 		 * seemed wrong but also seemed to work so we're rolling with it for
 		 * now.
+		 * 
+		 * This change would allow for more components to added to the day
+		 * component such as checkboxes could be radio buttons or have a
+		 * dropdown menu or multiple job lists per day; the possibilities are
+		 * endless!1!
 		 */
 
 		for (Day day : days) {
@@ -174,6 +179,10 @@ public class Config extends javax.swing.JFrame {
 		 * Removed code duplication by removing separate initialization code for
 		 * each day of the week, and instead treating each day with the same
 		 * code and utilizing reflection to minimize actual code.
+		 * 
+		 * This change would allow for easier internationalization of the days
+		 * as well as easily change out what the actionlistener was so that when
+		 * you checked a day it change the focus to be that day's tab.
 		 */
 		String[] daysList = new String[] { "sunday", "monday", "tuesday",
 				"wednesday", "thursday", "friday", "saturday" };

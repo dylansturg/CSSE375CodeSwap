@@ -3,6 +3,8 @@ package scheduleGenerator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -46,58 +48,28 @@ public class CalendarGUI extends javax.swing.JFrame {
 		this.fillTableForThisMonth();
 	}
 
-	private void setTitleMonth(int n, int year) {
-		switch (n) {
-		case (1):
-			this.monthTitle.setText("January " + year);
-			this.monthName = "January " + year;
-			break;
-		case (2):
-			this.monthTitle.setText("February " + year);
-			this.monthName = "February " + year;
-			break;
-		case (3):
-			this.monthTitle.setText("March " + year);
-			this.monthName = "March " + year;
-			break;
-		case (4):
-			this.monthTitle.setText("April " + year);
-			this.monthName = "April " + year;
-			break;
-		case (5):
-			this.monthTitle.setText("May " + year);
-			this.monthName = "May " + year;
-			break;
-		case (6):
-			this.monthTitle.setText("June " + year);
-			this.monthName = "June " + year;
-			break;
-		case (7):
-			this.monthTitle.setText("July " + year);
-			this.monthName = "July " + year;
-			break;
-		case (8):
-			this.monthTitle.setText("August " + year);
-			this.monthName = "August " + year;
-			break;
-		case (9):
-			this.monthTitle.setText("September " + year);
-			this.monthName = "September " + year;
-			break;
-		case (10):
-			this.monthTitle.setText("October " + year);
-			this.monthName = "October " + year;
-			break;
-		case (11):
-			this.monthTitle.setText("November " + year);
-			this.monthName = "November " + year;
-			break;
-		case (12):
-			this.monthTitle.setText("December " + year);
-			this.monthName = "December " + year;
-			break;
-
+	// Swap 1 - Team 03 - QUALITY CHANGE
+	private String getMonthFromInt(int n) {
+		SimpleDateFormat monthParse = new SimpleDateFormat("MM");
+		SimpleDateFormat monthDisplay = new SimpleDateFormat("MMMM");
+		try {
+			return monthDisplay.format(monthParse.parse("" + n));
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
+		return String.format("? error in getMonthFromInt:{0}", n);
+	}
+
+	private void setTitleMonth(int n, int year) {
+		// Swap 1 - Team 03 - QUALITY CHANGE
+		/*
+		 *  Converted a switch statement to be a simple lookup.
+		 *  
+		 *  This change would allow for easier internationalization of the months.
+		 */
+		this.monthTitle.setText(getMonthFromInt(n) + " " + year);
+		this.monthName = getMonthFromInt(n) + " " + year;
+		
 	}
 
 	/**
@@ -111,64 +83,9 @@ public class CalendarGUI extends javax.swing.JFrame {
 		this.monthsAhead = 0;
 		this.yearsAhead = 0;
 
-		String keyStart = currentYear + "/"
-				+ String.format("%02d", this.currentMonth);
-		String currentKey = "";
+		// Swap 1 - Team 03 - QUALITY CHANGE
 
-		// Generates calendar for current month if none exists
-		while (currentKey.equals("")) {
-			Set<String> keys = this.scheduleMap.keySet();
-			for (String key : keys) {
-				if (key.startsWith(keyStart)) {
-					currentKey = key;
-					break;
-				}
-			}
-			if (currentKey.equals("")) {
-				Thread t = new Thread(this.schedule);
-				t.start();
-				//this.schedule.calculateNextMonth();
-			}
-		}
-
-		DefaultTableModel table = new DefaultTableModel(new Object[0][0],
-				new String[0][0]);
-
-		this.cal = new GregorianCalendar(currentYear, this.currentMonth - 1, 1);
-
-		while (this.currentMonth == this.cal.get(Calendar.MONTH) + 1) {
-			String tempKey = this.cal.get(Calendar.YEAR)
-					+ "/"
-					+ String.format("%02d", (this.cal.get(Calendar.MONTH) + 1))
-					+ "/"
-					+ String.format("%02d", this.cal.get(Calendar.DAY_OF_MONTH));
-			if (this.scheduleMap.containsKey(tempKey)) {
-
-				int numOfJobs = this.scheduleMap.get(tempKey).size();
-				String[] colData = new String[numOfJobs];
-				int i = 0;
-
-				for (String key : this.scheduleMap.get(tempKey).keySet()) {
-					colData[i] = key + ": "
-							+ this.scheduleMap.get(tempKey).get(key).getName();
-					i++;
-				}
-
-				String numDate = (this.cal.get(Calendar.MONTH) + 1)
-						+ "/"
-						+ String.format("%02d",
-								this.cal.get(Calendar.DAY_OF_MONTH)) + "/"
-						+ String.format("%02d", this.cal.get(Calendar.YEAR));
-				String colTitle = this.getNameforNum(this.cal
-						.get(Calendar.DAY_OF_WEEK)) + " (" + numDate + ")";
-				table.addColumn(colTitle, colData);
-
-			}
-			this.cal.add(Calendar.DATE, 1);
-		}
-
-		HTMLGenerator.addMonth(this.monthName, table);
-		this.scheduleTable.setModel(table);
+		fillTableForMonth(currentYear, this.currentMonth);
 	}
 
 	/**
@@ -188,6 +105,20 @@ public class CalendarGUI extends javax.swing.JFrame {
 		}
 		this.setTitleMonth(showMonth, currentYear);
 
+		// Swap 1 - Team 03 - QUALITY CHANGE
+
+		fillTableForMonth(currentYear, showMonth);
+	}
+
+	// Swap 1 - Team 03 - QUALITY CHANGE
+	/*
+	 * Extract Method to remove duplicated code from fillTableMonthAhead and
+	 * fillTableForThisMonth
+	 * 
+	 * This change would allow for arbitrarily changing the tables for months to be ones behind or more than a month ahead.
+	 */
+
+	private void fillTableForMonth(int currentYear, int showMonth) {
 		String keyStart = currentYear + "/" + String.format("%02d", showMonth);
 		String currentKey = "";
 
@@ -203,7 +134,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 			if (currentKey.equals("")) {
 				Thread t = new Thread(this.schedule);
 				t.start();
-				//this.schedule.calculateNextMonth();
+				// this.schedule.calculateNextMonth();
 			}
 		}
 
@@ -296,7 +227,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 				if (currentKey.equals("")) {
 					Thread t = new Thread(this.schedule);
 					t.start();
-					//this.schedule.calculateNextMonth();
+					// this.schedule.calculateNextMonth();
 				}
 			}
 
@@ -417,19 +348,20 @@ public class CalendarGUI extends javax.swing.JFrame {
 						"Thursday (10/26/12)" }));
 		this.scheduleTable.setColumnSelectionAllowed(true);
 		this.scheduleTable.getTableHeader().setReorderingAllowed(false);
-		
-		for(Worker i:this.schedule.getWorkers())
-		{
+
+		for (Worker i : this.schedule.getWorkers()) {
 			final Worker input = i;
-			this.popup.add(new JMenuItem(input.getName())).addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					editCell(input);
-				}
-			});
+			this.popup.add(new JMenuItem(input.getName())).addActionListener(
+					new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(
+								java.awt.event.ActionEvent evt) {
+							editCell(input);
+						}
+					});
 		}
 		this.scheduleTable.setComponentPopupMenu(this.popup);
-		
+
 		this.jScrollPane1.setViewportView(this.scheduleTable);
 
 		this.fileMenu.setText("File");
@@ -456,7 +388,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 				undoChangesActionPerformed(evt);
 			}
 		});
-		//this.fileMenu.add(this.undoChanges);
+		// this.fileMenu.add(this.undoChanges);
 
 		this.menuBar.add(this.fileMenu);
 
@@ -642,14 +574,14 @@ public class CalendarGUI extends javax.swing.JFrame {
 		for (String i : dutyRows) {
 			textOutput += "\n" + i;
 		}
-		
+
 		char[] letterOutput = textOutput.toCharArray();
 
 		try {
 			readout.createNewFile();
 
 			FileWriter outFile = new FileWriter(readout);
-			for(char i:letterOutput)
+			for (char i : letterOutput)
 				outFile.write(i);
 			outFile.close();
 		} catch (IOException exception) {
@@ -670,22 +602,21 @@ public class CalendarGUI extends javax.swing.JFrame {
 	private void undoChangesActionPerformed(java.awt.event.ActionEvent evt) {
 		// removed
 	}
-	
-	private void editCell(Worker input)
-	{
+
+	private void editCell(Worker input) {
 		int i = this.scheduleTable.getSelectedRow();
 		int j = this.scheduleTable.getSelectedColumn();
-		if(this.scheduleTable.getValueAt(i,j) != null)
-		{
+		if (this.scheduleTable.getValueAt(i, j) != null) {
 			System.out.println(this.scheduleTable.getColumnName(j));
-			String job = this.scheduleTable.getValueAt(i,j).toString().split(":")[0];
+			String job = this.scheduleTable.getValueAt(i, j).toString()
+					.split(":")[0];
 			String date = this.scheduleTable.getColumnName(j).split(" ")[1];
-			date = date.substring(1,date.length()-1);
+			date = date.substring(1, date.length() - 1);
 			String[] dateNums = date.split("/");
 			date = dateNums[2] + "/" + dateNums[0] + "/" + dateNums[1];
 			System.out.println(date);
-			this.scheduleMap.get(date).put(job,input);
-			this.scheduleTable.setValueAt(job + ": " + input.getName(),i,j);
+			this.scheduleMap.get(date).put(job, input);
+			this.scheduleTable.setValueAt(job + ": " + input.getName(), i, j);
 		}
 	}
 
