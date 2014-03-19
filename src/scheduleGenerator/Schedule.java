@@ -186,6 +186,7 @@ public class Schedule extends Thread implements Serializable {
 		Main.dumpConfigFile();
 	}
 
+	
 	private int numForName(String nameOfDay) {
 		int dayNum = 0;
 		if (nameOfDay.equals("Sunday")) {
@@ -206,6 +207,8 @@ public class Schedule extends Thread implements Serializable {
 		return dayNum;
 	}
 
+	
+	
 	// /**
 	// * Returns the month/day/year of next date with the name of day.
 	// *

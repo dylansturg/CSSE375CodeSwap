@@ -20,6 +20,8 @@ import javax.swing.JOptionPane;
  * 
  * @author schneimd
  */
+// Code Smell Large Class
+// Divergent Change - Displays jobs, creates the displays, handles which day to display
 public class Config extends javax.swing.JFrame {
 
 	private boolean firstSelection = true;

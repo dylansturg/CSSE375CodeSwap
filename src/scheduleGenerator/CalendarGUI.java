@@ -63,13 +63,14 @@ public class CalendarGUI extends javax.swing.JFrame {
 	private void setTitleMonth(int n, int year) {
 		// Swap 1 - Team 03 - QUALITY CHANGE
 		/*
-		 *  Converted a switch statement to be a simple lookup.
-		 *  
-		 *  This change would allow for easier internationalization of the months.
+		 * Converted a switch statement to be a simple lookup.
+		 * 
+		 * This change would allow for easier internationalization of the
+		 * months.
 		 */
 		this.monthTitle.setText(getMonthFromInt(n) + " " + year);
 		this.monthName = getMonthFromInt(n) + " " + year;
-		
+
 	}
 
 	/**
@@ -115,9 +116,11 @@ public class CalendarGUI extends javax.swing.JFrame {
 	 * Extract Method to remove duplicated code from fillTableMonthAhead and
 	 * fillTableForThisMonth
 	 * 
-	 * This change would allow for arbitrarily changing the tables for months to be ones behind or more than a month ahead.
+	 * This change would allow for arbitrarily changing the tables for months to
+	 * be ones behind or more than a month ahead.
 	 */
 
+	// Code Smell - Long Method
 	private void fillTableForMonth(int currentYear, int showMonth) {
 		String keyStart = currentYear + "/" + String.format("%02d", showMonth);
 		String currentKey = "";
@@ -183,6 +186,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 	 * Displays the last months from current month.
 	 * 
 	 */
+	// Code Smell - Long Method, Duplicated Code
 	public void fillTableMonthBack() {
 		int tempMonths = this.monthsAhead;
 		if ((new GregorianCalendar().get(Calendar.MONTH) + tempMonths) % 12 == 0) {
@@ -278,6 +282,9 @@ public class CalendarGUI extends javax.swing.JFrame {
 
 	}
 
+	// Code Smell Switch Statement
+	// Because this isn't part of day this code shows up in varing forms in
+	// different classes and so does getting and int
 	private String getNameforNum(int n) {
 		switch (n) {
 		case (1):
@@ -298,6 +305,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 		return null;
 	}
 
+	// Code Smell Long Method
 	private void initComponents() {
 
 		this.monthTitle = new javax.swing.JLabel();
@@ -546,6 +554,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 	/**
 	 * @param evt
 	 */
+	// Code Smell - Long Method
 	private void generateTextActionPerformed(java.awt.event.ActionEvent evt) {
 		NavigableSet<String> keySet = this.scheduleMap.navigableKeySet();
 		String textOutput = new String();

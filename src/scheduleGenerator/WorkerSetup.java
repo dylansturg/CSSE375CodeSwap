@@ -51,9 +51,10 @@ public class WorkerSetup extends javax.swing.JFrame {
 						JPanel p = (JPanel) view.getComponent(0);
 
 						for (Component job : p.getComponents()) {
-							for (String workerJob : workers.get(c).getDays().get(n)
-									.getJobs()) {
-								if (((JCheckBox) job).getText().equals(workerJob)) {
+							for (String workerJob : workers.get(c).getDays()
+									.get(n).getJobs()) {
+								if (((JCheckBox) job).getText().equals(
+										workerJob)) {
 									((JCheckBox) job).setSelected(true);
 								}
 							}
@@ -75,6 +76,10 @@ public class WorkerSetup extends javax.swing.JFrame {
 		addWorker();
 	}
 
+	// Code Smell - Feature Envy, it copies Main.getDays() to this.days which
+	// duplicates it
+	// Duplicated Code
+	// Long Method
 	private void addWorker() {
 		this.days = Main.getDays();
 		javax.swing.JTabbedPane tempWorkerDays = new javax.swing.JTabbedPane();
@@ -238,6 +243,8 @@ public class WorkerSetup extends javax.swing.JFrame {
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 */
+	// Code Smell Middle Man -layout.setHorizontalGroup has a super long chain
+	// but its really just adding some JWrapper to everything as it goes along
 	private void initComponents() {
 
 		this.workerTabPanel = new javax.swing.JTabbedPane();
