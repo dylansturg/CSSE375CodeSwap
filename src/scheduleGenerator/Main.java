@@ -8,6 +8,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
 
 /**
  * This class handles the interaction of one frame to another as well as
@@ -40,7 +46,12 @@ public class Main {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+
+		
+		WorkerCalendar wc = new WorkerCalendar(new File("mycalendar.ics"));
+		
+		
 		path = new File("schedule_data.ser");
 		config = new Config();
 		

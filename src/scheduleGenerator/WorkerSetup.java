@@ -3,9 +3,16 @@ package scheduleGenerator;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
  * To change this template, choose Tools | Templates
@@ -247,47 +254,10 @@ public class WorkerSetup extends javax.swing.JFrame {
 	// but its really just adding some JWrapper to everything as it goes along
 	private void initComponents() {
 
-		this.workerTabPanel = new javax.swing.JTabbedPane();
-		this.addButton = new javax.swing.JButton();
-		this.removeButton = new javax.swing.JButton();
-		this.nextButton = new javax.swing.JButton();
-		this.backButton = new javax.swing.JButton();
-
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Worker Setup");
 
-		this.addButton.setText("Add Worker");
-		this.addButton.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				addButtonActionPerformed(evt);
-			}
-		});
-
-		this.removeButton.setText("Remove Worker");
-		this.removeButton
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						removeButtonActionPerformed(evt);
-					}
-				});
-
-		this.nextButton.setText("Next");
-		this.nextButton.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				nextButtonActionPerformed(evt);
-			}
-		});
-
-		this.backButton.setText("Back");
-		this.backButton.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backButtonActionPerformed(evt);
-			}
-		});
+		initializeButtons();
 
 		JScrollPane outside = new JScrollPane();
 		outside.setViewportView(this.workerTabPanel);
@@ -297,72 +267,152 @@ public class WorkerSetup extends javax.swing.JFrame {
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addGap(106, 106, 106)
-								.addComponent(this.backButton,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										65,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addGap(18, 18, 18)
-								.addComponent(this.nextButton,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										65,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(
-														layout.createSequentialGroup()
-																.addComponent(
-																		this.addButton,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		136,
-																		javax.swing.GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																		82,
-																		Short.MAX_VALUE)
-																.addComponent(
-																		this.removeButton,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		136,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addComponent(
-														outside,
-														javax.swing.GroupLayout.PREFERRED_SIZE,
-														0, Short.MAX_VALUE))
-								.addContainerGap()));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addComponent(outside,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										330,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(this.addButton)
-												.addComponent(this.removeButton))
-								.addGap(18, 18, 18)
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(this.nextButton)
-												.addComponent(this.backButton))
-								.addGap(0, 8, Short.MAX_VALUE)));
+				.addGroup(createNavigationLayoutGroup(layout))
+				.addGroup(createHorizontalLayoutGroup(outside, layout)));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+				createAddRemoveVertialGroup(outside, layout)));
 
 		pack();
+	}
+
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Bad Smell - Long Method
+	// Breaking up creating the GUI layout
+
+	private SequentialGroup createHorizontalLayoutGroup(JScrollPane outside,
+			javax.swing.GroupLayout layout) {
+		SequentialGroup group = layout.createSequentialGroup();
+		group.addContainerGap();
+		group.addGroup(layout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(createAddRemoveHorizontalGroup(layout))
+				.addComponent(outside, javax.swing.GroupLayout.PREFERRED_SIZE,
+						0, Short.MAX_VALUE));
+		group.addContainerGap();
+
+		return group;
+	}
+
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Bad Smell - Long Method
+	// Breaking up creating the GUI layout
+
+	private SequentialGroup createAddRemoveVertialGroup(JScrollPane outside,
+			javax.swing.GroupLayout layout) {
+
+		SequentialGroup group = layout.createSequentialGroup();
+		group.addComponent(outside, javax.swing.GroupLayout.PREFERRED_SIZE,
+				330, javax.swing.GroupLayout.PREFERRED_SIZE);
+		group.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
+		group.addGroup(layout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+				.addComponent(this.addButton).addComponent(this.removeButton));
+		group.addGap(18, 18, 18);
+		
+		group.addGroup(layout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+				.addComponent(this.nextButton).addComponent(this.backButton).addComponent(this.addCalendarButton));
+		
+		group.addGap(0, 8, Short.MAX_VALUE);
+
+		return group;
+	}
+
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Bad Smell - Long Method
+	// Breaking up creating the GUI layout
+
+	private SequentialGroup createAddRemoveHorizontalGroup(
+			javax.swing.GroupLayout layout) {
+
+		SequentialGroup group = layout.createSequentialGroup();
+		group.addComponent(this.addButton,
+				javax.swing.GroupLayout.PREFERRED_SIZE, 136,
+				javax.swing.GroupLayout.PREFERRED_SIZE);
+		group.addPreferredGap(
+				javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82,
+				Short.MAX_VALUE);
+		group.addComponent(this.removeButton,
+				javax.swing.GroupLayout.PREFERRED_SIZE, 136,
+				javax.swing.GroupLayout.PREFERRED_SIZE);
+
+		return group;
+	}
+
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Bad Smell - Long Method
+	// Breaking up creating the GUI layout
+
+	private SequentialGroup createNavigationLayoutGroup(
+			javax.swing.GroupLayout layout) {
+
+		SequentialGroup group = layout.createSequentialGroup();
+		group.addGap(106, 106, 106);
+		group.addComponent(this.backButton,
+				javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+				javax.swing.GroupLayout.PREFERRED_SIZE);
+		group.addGap(18, 18, 18);
+		group.addComponent(this.nextButton,
+				javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+				javax.swing.GroupLayout.PREFERRED_SIZE);
+		group.addComponent(this.addCalendarButton,
+				javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+				javax.swing.GroupLayout.PREFERRED_SIZE);
+		group.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
+				Short.MAX_VALUE);
+
+		return group;
+	}
+
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Refactoring Long Method
+	// The class's init method was far too big to actually understand.
+
+	private void initializeButtons() {
+		this.workerTabPanel = new javax.swing.JTabbedPane();
+		this.addButton = new javax.swing.JButton("Add Worker");
+		this.removeButton = new javax.swing.JButton("Remove Worker");
+		this.nextButton = new javax.swing.JButton("Next");
+		this.backButton = new javax.swing.JButton("Back");
+		this.addCalendarButton = new JButton("Add Calendar");
+
+		this.addButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				addButtonActionPerformed(evt);
+			}
+		});
+
+		this.removeButton
+				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						removeButtonActionPerformed(evt);
+					}
+				});
+
+		this.nextButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				nextButtonActionPerformed(evt);
+			}
+		});
+
+		this.backButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				backButtonActionPerformed(evt);
+			}
+		});
+
+		this.addCalendarButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				addCalendarActionPerformed(evt);
+			}
+		});
 	}
 
 	/**
@@ -371,7 +421,8 @@ public class WorkerSetup extends javax.swing.JFrame {
 	private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		ArrayList<Worker> workers = new ArrayList<Worker>();
 		boolean allGood = true;
-		for (JPanel tab : this.workerTabs) {
+		for (int tabIndex = 0; tabIndex < this.workerTabs.size(); tabIndex++){
+			JPanel tab = this.workerTabs.get(tabIndex);
 			ArrayList<Day> workerDays = new ArrayList<Day>();
 			JTextField nameArea = (JTextField) tab.getComponent(2);
 			if (nameArea.getText().isEmpty()) {
@@ -400,7 +451,7 @@ public class WorkerSetup extends javax.swing.JFrame {
 				}
 				workerDays.add(new Day(daysPane.getTitleAt(i), jobNames));
 			}
-			workers.add(new Worker(nameArea.getText(), workerDays));
+			workers.add(new Worker(nameArea.getText(), workerDays, new WorkerCalendar(this.calendarFiles.get(tabIndex))));
 		}
 		if (allGood) {
 			HTMLGenerator.reset();
@@ -428,6 +479,23 @@ public class WorkerSetup extends javax.swing.JFrame {
 		this.addWorker();
 	}
 
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Adding new code
+
+	private void addCalendarActionPerformed(ActionEvent evt) {
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Calendars", "ics");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			System.out.println("You chose to open this file: "
+					+ chooser.getSelectedFile().getName());
+			this.calendarFiles.put(this.workerTabPanel.getSelectedIndex(),
+					chooser.getSelectedFile());
+		}
+	}
+
 	/**
 	 * @param evt
 	 */
@@ -441,4 +509,9 @@ public class WorkerSetup extends javax.swing.JFrame {
 	private javax.swing.JButton nextButton;
 	private javax.swing.JButton removeButton;
 	private javax.swing.JTabbedPane workerTabPanel;
+
+	// Swap 1 - Team 03 - BONUS FEATURE
+	// Adding new feature
+	private javax.swing.JButton addCalendarButton;
+	private Map<Integer, File> calendarFiles = new HashMap<Integer, File>();
 }

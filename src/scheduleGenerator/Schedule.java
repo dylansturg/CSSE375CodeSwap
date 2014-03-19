@@ -210,15 +210,25 @@ public class Schedule extends Thread implements Serializable {
 
 	private void getAvailableWorkers(Day day, ArrayList<String> workersWorking,
 			String job, ArrayList<Worker> workersForJob) {
-		for (Worker worker : this.workerIndices.get(this.numForName(day
-				.getNameOfDay()))) {
+		// Swap 1 - team 03 - BONUS FEATURE
+		// refactoring to remove code duplication in getting day's index in the week
+		for (Worker worker : this.workerIndices.get(day.getIntOfDay()+1)) {
+			
 			Day workerDay = worker.getDayWithName(day.getNameOfDay());
-			if (workerDay.getJobs().contains(job)
-					&& !workersWorking.contains(worker.getName())) {
+			
+			if (checkWorkerAvailability(workersWorking, job, worker, workerDay)) {
 				workersForJob.add(worker);
 
 			}
 		}
+	}
+
+	private boolean checkWorkerAvailability(ArrayList<String> workersWorking,
+			String job, Worker worker, Day workerDay) {
+		this.cal.set(Calendar.HOUR_OF_DAY, 12);
+		return workerDay.getJobs().contains(job)
+				&& !workersWorking.contains(worker.getName())
+				&& !worker.checkScheduleConflict(this.cal);
 	}
 
 	// SWAP 1 - Team 03 - Quality Change
