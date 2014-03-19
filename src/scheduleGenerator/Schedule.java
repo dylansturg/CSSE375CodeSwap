@@ -92,89 +92,143 @@ public class Schedule extends Thread implements Serializable {
 
 		// While still in the current month generate a schedule for each day
 		while (currentMonth == this.cal.get(Calendar.MONTH)) {
-
-			for (Day day : this.days) {
-
-				if (this.cal.get(Calendar.DAY_OF_WEEK) == this.numForName(day
-						.getNameOfDay())) {
-
-					TreeMap<String, Worker> jobsWithWorker = new TreeMap<String, Worker>();
-					ArrayList<String> workersWorking = new ArrayList<String>();
-
-					ArrayList<String> jobsInOrder = day.getJobs();
-
-					// Used for html later
-
-					daysInMonth++;
-					numOfJobs.add(jobsInOrder.size());
-
-					//
-
-					for (String job : jobsInOrder) {
-
-						ArrayList<Worker> workersForJob = new ArrayList<Worker>();
-
-						for (Worker worker : this.workerIndices.get(this
-								.numForName(day.getNameOfDay()))) {
-							Day workerDay = worker.getDayWithName(day
-									.getNameOfDay());
-							if (workerDay.getJobs().contains(job)
-									&& !workersWorking.contains(worker
-											.getName())) {
-								workersForJob.add(worker);
-
-							}
-						}
-						if (workersForJob.size() > 0) {
-							Worker workerForJob = workersForJob
-									.get(new Random().nextInt(workersForJob
-											.size()));
-							for (Worker w : workersForJob) {
-								if (w.numWorkedForJob(job) < workerForJob
-										.numWorkedForJob(job)) {
-									workerForJob = w;
-								}
-							}
-							jobsWithWorker.put(job, workerForJob);
-							workersWorking.add(workerForJob.getName());
-							workerForJob.addWorkedJob(job);
-						} else {
-							jobsWithWorker.put(job, new Worker("Empty",
-									new ArrayList<Day>()));
-							JOptionPane
-									.showMessageDialog(
-											new JFrame(),
-											"No workers are able to work as a(n) "
-													+ job + " on "
-													+ day.getNameOfDay());
-							this.workerForEveryJob = false;
-							break;
-						}
-
-					}
-					String date = this.cal.get(Calendar.YEAR)
-							+ "/"
-							+ String.format("%02d",
-									(this.cal.get(Calendar.MONTH) + 1))
-							+ "/"
-							+ String.format("%02d",
-									this.cal.get(Calendar.DAY_OF_MONTH));
-					this.schedule.put(date, jobsWithWorker);
-					break; // Breaks so it doesn't check the other days
-				}
-			}
+			daysInMonth = scheduleWeek(daysInMonth, numOfJobs);
 			this.cal.add(Calendar.DATE, 1);
 		}
 		HTMLGenerator.makeTable(daysInMonth, numOfJobs);
+
+		calculateAdditionalMonth(initialSize);
+
+		Main.dumpConfigFile();
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private int scheduleWeek(int daysInMonth, ArrayList<Integer> numOfJobs) {
+		for (Day day : this.days) {
+
+			if (sameWeekDayAsCalendar(day)) {
+
+				daysInMonth++;
+				assignAllJobsForDay(numOfJobs, day);
+				break; // Breaks so it doesn't check the other days
+			}
+		}
+		return daysInMonth;
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private void calculateAdditionalMonth(int initialSize) {
 		// Calls itself if there aren't many days generated
 		// For instance if the date it was created is the last day of the
 		// month it would only makes one day of schedule.
 		if (this.schedule.size() - initialSize < 2 && !this.workerForEveryJob) {
 			this.calculateNextMonth();
 		}
-
-		Main.dumpConfigFile();
 	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private void assignAllJobsForDay(ArrayList<Integer> numOfJobs, Day day) {
+		TreeMap<String, Worker> jobsWithWorker = new TreeMap<String, Worker>();
+		ArrayList<String> workersWorking = new ArrayList<String>();
+
+		ArrayList<String> jobsInOrder = day.getJobs();
+
+		// Used for html later
+
+		numOfJobs.add(jobsInOrder.size());
+
+		//
+
+		for (String job : jobsInOrder) {
+
+			ArrayList<Worker> workersForJob = new ArrayList<Worker>();
+
+			getAvailableWorkers(day, workersWorking, job, workersForJob);
+
+			if (workersForJob.size() > 0) {
+				assignWorkerToJob(jobsWithWorker, workersWorking, job,
+						workersForJob);
+			} else {
+				displayNoWorkerError(day, jobsWithWorker, job);
+				break;
+			}
+
+		}
+		String date = getFormattedDate();
+		this.schedule.put(date, jobsWithWorker);
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private boolean sameWeekDayAsCalendar(Day day) {
+		return this.cal.get(Calendar.DAY_OF_WEEK) == this.numForName(day
+				.getNameOfDay());
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private String getFormattedDate() {
+		return this.cal.get(Calendar.YEAR) + "/"
+				+ String.format("%02d", (this.cal.get(Calendar.MONTH) + 1))
+				+ "/"
+				+ String.format("%02d", this.cal.get(Calendar.DAY_OF_MONTH));
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private void displayNoWorkerError(Day day,
+			TreeMap<String, Worker> jobsWithWorker, String job) {
+		jobsWithWorker.put(job, new Worker("Empty", new ArrayList<Day>()));
+		JOptionPane.showMessageDialog(
+				new JFrame(),
+				"No workers are able to work as a(n) " + job + " on "
+						+ day.getNameOfDay());
+		this.workerForEveryJob = false;
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private void assignWorkerToJob(TreeMap<String, Worker> jobsWithWorker,
+			ArrayList<String> workersWorking, String job,
+			ArrayList<Worker> workersForJob) {
+		Worker workerForJob = workersForJob.get(new Random()
+				.nextInt(workersForJob.size()));
+		for (Worker w : workersForJob) {
+			if (w.numWorkedForJob(job) < workerForJob.numWorkedForJob(job)) {
+				workerForJob = w;
+			}
+		}
+		jobsWithWorker.put(job, workerForJob);
+		workersWorking.add(workerForJob.getName());
+		workerForJob.addWorkedJob(job);
+	}
+
+	// Swap 1 - Team 03 - Quality Change
+
+	private void getAvailableWorkers(Day day, ArrayList<String> workersWorking,
+			String job, ArrayList<Worker> workersForJob) {
+		for (Worker worker : this.workerIndices.get(this.numForName(day
+				.getNameOfDay()))) {
+			Day workerDay = worker.getDayWithName(day.getNameOfDay());
+			if (workerDay.getJobs().contains(job)
+					&& !workersWorking.contains(worker.getName())) {
+				workersForJob.add(worker);
+
+			}
+		}
+	}
+
+	// SWAP 1 - Team 03 - Quality Change
+
+	// Extracting this method allows developers to easily change the internal
+	// format used for the schedule. The internal format is strictly of the form
+	// YY/MM/DD which may make some internationalizzation more challenging.
+	// Furthermore, the change allows developers to customize the options
+	// regarding already existing calendars: for example, you could add an
+	// option to regenerate the existing schedule.
 
 	private synchronized void handleAlreadyGeneratedSchedule() {
 		String lastDateMade = this.schedule.lastKey();
@@ -189,7 +243,6 @@ public class Schedule extends Thread implements Serializable {
 		}
 	}
 
-	
 	private int numForName(String nameOfDay) {
 		int dayNum = 0;
 		if (nameOfDay.equals("Sunday")) {
@@ -210,8 +263,6 @@ public class Schedule extends Thread implements Serializable {
 		return dayNum;
 	}
 
-	
-	
 	// /**
 	// * Returns the month/day/year of next date with the name of day.
 	// *
