@@ -80,18 +80,8 @@ public class Schedule extends Thread implements Serializable {
 
 		int initialSize = this.schedule.size();
 
-		// If the schedule has already been generated
 		if (this.schedule.size() > 0) {
-			String lastDateMade = this.schedule.lastKey();
-			String[] parts = lastDateMade.split("/");
-			int year = Integer.parseInt(parts[0]);
-			int month = Integer.parseInt(parts[1]) - 1;
-			int day = Integer.parseInt(parts[2]);
-			this.cal = new GregorianCalendar(year, month, day);
-			int tempNum = this.cal.get(Calendar.MONTH);
-			while (tempNum == this.cal.get(Calendar.MONTH)) {
-				this.cal.add(Calendar.DATE, 1);
-			}
+			handleAlreadyGeneratedSchedule();
 		}
 
 		// Used to see if month changes
@@ -184,6 +174,19 @@ public class Schedule extends Thread implements Serializable {
 		}
 
 		Main.dumpConfigFile();
+	}
+
+	private synchronized void handleAlreadyGeneratedSchedule() {
+		String lastDateMade = this.schedule.lastKey();
+		String[] parts = lastDateMade.split("/");
+		int year = Integer.parseInt(parts[0]);
+		int month = Integer.parseInt(parts[1]) - 1;
+		int day = Integer.parseInt(parts[2]);
+		this.cal = new GregorianCalendar(year, month, day);
+		int tempNum = this.cal.get(Calendar.MONTH);
+		while (tempNum == this.cal.get(Calendar.MONTH)) {
+			this.cal.add(Calendar.DATE, 1);
+		}
 	}
 
 	
