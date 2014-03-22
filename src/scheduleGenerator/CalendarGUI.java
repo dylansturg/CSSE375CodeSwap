@@ -1,5 +1,7 @@
 package scheduleGenerator;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,6 +41,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 	private int earliestYear, earliestMonth, earliestDay;
 	private int monthsAhead = 0;
 	private int yearsAhead = 0;
+	protected Locale currentLocale = Locale.getDefault();
 
 	/**
 	 * Creates new form Calendar
@@ -57,11 +61,11 @@ public class CalendarGUI extends javax.swing.JFrame {
 	}
 
 	// Swap 1 - Team 03 - QUALITY CHANGE
-	private String getMonthFromInt(int n) {	
-		
-		
+	private String getMonthFromInt(int n) {
+
 		SimpleDateFormat monthParse = new SimpleDateFormat("MM");
-		SimpleDateFormat monthDisplay = new SimpleDateFormat("MMMM", Locale.getDefault());
+		SimpleDateFormat monthDisplay = new SimpleDateFormat("MMMM",
+				this.currentLocale);
 		try {
 			return monthDisplay.format(monthParse.parse("" + n));
 		} catch (ParseException e) {
@@ -172,10 +176,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 				+ "/"
 				+ String.format("%02d", this.cal.get(Calendar.DAY_OF_MONTH))
 				+ "/" + this.cal.get(Calendar.YEAR);
-		String colTitle = this
-				.getNameforNum(this.cal.get(Calendar.DAY_OF_WEEK))
-				+ " ("
-				+ numDate + ")";
+		String colTitle = this.getNameforNum(this.cal) + " (" + numDate + ")";
 		return colTitle;
 	}
 
@@ -262,24 +263,18 @@ public class CalendarGUI extends javax.swing.JFrame {
 	// up in varying forms in different classes and so does getting an int from
 	// a day. The switch could be removed by using Java's standard library
 	// representations instead of passing around ints and strings.
-	private String getNameforNum(int n) {
-		switch (n) {
-		case (1):
-			return "Sunday";
-		case (2):
-			return "Monday";
-		case (3):
-			return "Tuesday";
-		case (4):
-			return "Wednesday";
-		case (5):
-			return "Thursday";
-		case (6):
-			return "Friday";
-		case (7):
-			return "Saturday";
-		}
-		return null;
+	private String getNameforNum(Calendar cal) {
+		SimpleDateFormat monthDisplay = new SimpleDateFormat("EEEE",
+				this.currentLocale);
+		return monthDisplay.format(cal.getTime());
+
+		/*
+		 * 
+		 * switch (n) { case (1): return "Sunday"; case (2): return "Monday";
+		 * case (3): return "Tuesday"; case (4): return "Wednesday"; case (5):
+		 * return "Thursday"; case (6): return "Friday"; case (7): return
+		 * "Saturday"; } return null;
+		 */
 	}
 
 	// Swap 1 - Team 03 - Code Sniffing
@@ -437,6 +432,15 @@ public class CalendarGUI extends javax.swing.JFrame {
 
 		this.menuBar.add(this.generateMenu);
 
+		// Swap 1 - Team 03 - ADDITIONAL FEATURE
+		// Modifying existing code to add the menu for locale
+		JMenu localeMenu = new JMenu("Locale");
+		populateLocaleMenu(localeMenu);
+
+		MenuScroller.setScrollerFor(localeMenu);
+
+		this.menuBar.add(localeMenu);
+
 		setJMenuBar(this.menuBar);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
@@ -490,6 +494,44 @@ public class CalendarGUI extends javax.swing.JFrame {
 										javax.swing.GroupLayout.PREFERRED_SIZE)));
 
 		pack();
+	}
+
+	// Swap 1 - Team 03 - ADDITIONFAL FEATURE
+	// New methods to populate locale menu with all available locales
+
+	/*
+	 * Additional Feature: Added localization for displayed dates (the days and
+	 * months) on the calendar. Users can select an available local from the
+	 * drop down menu and the calendar will update to that local. Some do not
+	 * display correctly based on the character set required to display in that
+	 * locale.
+	 */
+
+	private void populateLocaleMenu(JMenu localeMenu) {
+		for (Locale loc : Locale.getAvailableLocales()) {
+			if (!loc.getDisplayCountry().equals("")) {
+				localeMenu.add(createLocaleMenuItem(loc));
+			}
+		}
+
+	}
+
+	// Swap 1 - Team 03 - ADDITIONAL FEATURE
+	// New Method to create a menu item from a locale
+	private JMenuItem createLocaleMenuItem(final Locale locale) {
+		JMenuItem germanMenuItem = new JMenuItem(String.format("%s (%s)",
+				locale.getDisplayLanguage(), locale.getDisplayCountry()));
+		germanMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CalendarGUI.this.currentLocale = locale;
+				CalendarGUI.this.fillTableForMonth(
+						CalendarGUI.this.cal.get(Calendar.YEAR),
+						CalendarGUI.this.cal.get(Calendar.MONTH));
+			}
+		});
+		return germanMenuItem;
 	}
 
 	/**
