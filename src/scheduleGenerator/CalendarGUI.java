@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
@@ -56,9 +57,11 @@ public class CalendarGUI extends javax.swing.JFrame {
 	}
 
 	// Swap 1 - Team 03 - QUALITY CHANGE
-	private String getMonthFromInt(int n) {
+	private String getMonthFromInt(int n) {	
+		
+		
 		SimpleDateFormat monthParse = new SimpleDateFormat("MM");
-		SimpleDateFormat monthDisplay = new SimpleDateFormat("MMMM");
+		SimpleDateFormat monthDisplay = new SimpleDateFormat("MMMM", Locale.getDefault());
 		try {
 			return monthDisplay.format(monthParse.parse("" + n));
 		} catch (ParseException e) {
