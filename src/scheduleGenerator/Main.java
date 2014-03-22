@@ -47,10 +47,6 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-
-		
-		WorkerCalendar wc = new WorkerCalendar(new File("mycalendar.ics"));
-		
 		
 		path = new File("schedule_data.ser");
 		config = new Config();
