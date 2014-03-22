@@ -120,6 +120,10 @@ public class Schedule extends Thread implements Serializable {
 	// Swap 1 - Team 03 - Quality Change
 
 	private void calculateAdditionalMonth(int initialSize) {
+		// Swap 1 - Team 03 - Code Sniffing
+		// SMELL: Comments - The comments are longer than the code! There must
+		// be a clearer way to represent this information.
+
 		// Calls itself if there aren't many days generated
 		// For instance if the date it was created is the last day of the
 		// month it would only makes one day of schedule.
@@ -211,11 +215,12 @@ public class Schedule extends Thread implements Serializable {
 	private void getAvailableWorkers(Day day, ArrayList<String> workersWorking,
 			String job, ArrayList<Worker> workersForJob) {
 		// Swap 1 - team 03 - BONUS FEATURE
-		// refactoring to remove code duplication in getting day's index in the week
-		for (Worker worker : this.workerIndices.get(day.getIntOfDay()+1)) {
-			
+		// refactoring to remove code duplication in getting day's index in the
+		// week
+		for (Worker worker : this.workerIndices.get(day.getIntOfDay() + 1)) {
+
 			Day workerDay = worker.getDayWithName(day.getNameOfDay());
-			
+
 			if (checkWorkerAvailability(workersWorking, job, worker, workerDay)) {
 				workersForJob.add(worker);
 
@@ -252,6 +257,13 @@ public class Schedule extends Thread implements Serializable {
 			this.cal.add(Calendar.DATE, 1);
 		}
 	}
+
+	// Swap 1 - Team 03 - Code Sniffing
+	// SMELL: Duplicate Code - This code is the counterpart to CalendarGUI's
+	// getNameForNum and appears in a few other places/variations throughout the
+	// code base. This duplication is especially ornery because the mapping of
+	// ints/strings is fragile and already available in the standard library
+	// (thus let the standard lib devs worry about it).
 
 	private int numForName(String nameOfDay) {
 		int dayNum = 0;

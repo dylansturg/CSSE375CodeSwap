@@ -25,7 +25,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class WorkerSetup extends javax.swing.JFrame {
 
+	// Swap 1 - Team 03 - Code Sniffing
+	// SMELL: Shotgun Surgery - Days are duplicated and used interchangeably in
+	// a handful of places (Worker, Main, WorkerSetup, CalendarGUI) and
+	// sometimes they are the same thing, other times they aren't. The duplicate
+	// ones will lead to changes in multiple places if they needed to change
+	// (say we needed to change Day out for DayWithTime).
 	private ArrayList<Day> days;
+	
 	private ArrayList<JPanel> workerTabs;
 
 	/**
@@ -83,11 +90,9 @@ public class WorkerSetup extends javax.swing.JFrame {
 		addWorker();
 	}
 
-	// Code Smell - Feature Envy, it copies Main.getDays() to this.days which
-	// duplicates it
-	// Duplicated Code
-	// Long Method
 	private void addWorker() {
+		// Swap 1 - Team 03 - Code Sniffing
+		// SMELL: Feature Envy - It has to reach into Main and get days to use.
 		this.days = Main.getDays();
 		javax.swing.JTabbedPane tempWorkerDays = new javax.swing.JTabbedPane();
 		javax.swing.JTextField tempWorkerName = new javax.swing.JTextField();
@@ -250,8 +255,7 @@ public class WorkerSetup extends javax.swing.JFrame {
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 */
-	// Code Smell Middle Man -layout.setHorizontalGroup has a super long chain
-	// but its really just adding some JWrapper to everything as it goes along
+
 	private void initComponents() {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -265,6 +269,11 @@ public class WorkerSetup extends javax.swing.JFrame {
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 				getContentPane());
 		getContentPane().setLayout(layout);
+		
+		// Swap 1 - Team 03 - Code Sniffing
+		// SMELL: Middle Man - layout.setHorizontalGroup has a super long chain
+		// but its really just adding some JWrapper to everything as it goes along
+		
 		layout.setHorizontalGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(createNavigationLayoutGroup(layout))
@@ -309,11 +318,12 @@ public class WorkerSetup extends javax.swing.JFrame {
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 				.addComponent(this.addButton).addComponent(this.removeButton));
 		group.addGap(18, 18, 18);
-		
+
 		group.addGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-				.addComponent(this.nextButton).addComponent(this.backButton).addComponent(this.addCalendarButton));
-		
+				.addComponent(this.nextButton).addComponent(this.backButton)
+				.addComponent(this.addCalendarButton));
+
 		group.addGap(0, 8, Short.MAX_VALUE);
 
 		return group;
@@ -421,7 +431,7 @@ public class WorkerSetup extends javax.swing.JFrame {
 	private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		ArrayList<Worker> workers = new ArrayList<Worker>();
 		boolean allGood = true;
-		for (int tabIndex = 0; tabIndex < this.workerTabs.size(); tabIndex++){
+		for (int tabIndex = 0; tabIndex < this.workerTabs.size(); tabIndex++) {
 			JPanel tab = this.workerTabs.get(tabIndex);
 			ArrayList<Day> workerDays = new ArrayList<Day>();
 			JTextField nameArea = (JTextField) tab.getComponent(2);
@@ -451,7 +461,8 @@ public class WorkerSetup extends javax.swing.JFrame {
 				}
 				workerDays.add(new Day(daysPane.getTitleAt(i), jobNames));
 			}
-			workers.add(new Worker(nameArea.getText(), workerDays, new WorkerCalendar(this.calendarFiles.get(tabIndex))));
+			workers.add(new Worker(nameArea.getText(), workerDays,
+					new WorkerCalendar(this.calendarFiles.get(tabIndex))));
 		}
 		if (allGood) {
 			HTMLGenerator.reset();

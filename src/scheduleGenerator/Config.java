@@ -20,8 +20,13 @@ import javax.swing.JOptionPane;
  * 
  * @author schneimd
  */
-// Code Smell Large Class
-// Divergent Change - Displays jobs, creates the displays, handles which day to display
+
+// Swap 1 - Team 03 - Code Sniffing
+// SMELL: Large Class and Divergent Change - This class is huge and does too many things: it collects
+// and interprets configuration information, provides a GUI for entering
+// information, and other stuff. Smells of a large class (over 1.5k lines) and
+// will suffer from divergent change; if any one of its tasks changes, then it
+// will change.
 public class Config extends javax.swing.JFrame {
 
 	private boolean firstSelection = true;

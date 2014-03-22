@@ -24,6 +24,13 @@ public class CalendarGUI extends javax.swing.JFrame {
 	private Schedule schedule;
 	private GregorianCalendar cal;
 	private TreeMap<String, TreeMap<String, Worker>> scheduleMap;
+
+	// Swap 1 - Team 03 - Code Sniffing
+	// SMELL: Primitive Obsession - All of the calendar/year variables are
+	// primitives when they could be better represented by already existing java
+	// standard library classes, which removes the need for a handle of methods
+	// the authors concocted to handle their primitive representations.
+
 	private int currentMonth;
 	private String monthName;
 	@SuppressWarnings("unused")
@@ -117,8 +124,6 @@ public class CalendarGUI extends javax.swing.JFrame {
 	 * This change would allow for arbitrarily changing the tables for months to
 	 * be ones behind or more than a month ahead.
 	 */
-
-	// Code Smell - Long Method
 	private void fillTableForMonth(int currentYear, int showMonth) {
 		this.setTitleMonth(showMonth, currentYear);
 		String keyStart = generateScheduleMapKey(currentYear, showMonth);
@@ -130,8 +135,11 @@ public class CalendarGUI extends javax.swing.JFrame {
 		this.cal = new GregorianCalendar(currentYear, showMonth - 1, 1);
 
 		while (showMonth == this.cal.get(Calendar.MONTH) + 1) {
-			String tempKey = generateScheduleMapKey(this.cal.get(Calendar.YEAR), this.cal.get(Calendar.MONTH) + 1, this.cal.get(Calendar.DAY_OF_MONTH));
-			
+			String tempKey = generateScheduleMapKey(
+					this.cal.get(Calendar.YEAR),
+					this.cal.get(Calendar.MONTH) + 1,
+					this.cal.get(Calendar.DAY_OF_MONTH));
+
 			if (this.scheduleMap.containsKey(tempKey)) {
 
 				int numOfJobs = this.scheduleMap.get(tempKey).size();
@@ -159,12 +167,12 @@ public class CalendarGUI extends javax.swing.JFrame {
 		String numDate = String.format("%02d",
 				(this.cal.get(Calendar.MONTH) + 1))
 				+ "/"
-				+ String.format("%02d",
-						this.cal.get(Calendar.DAY_OF_MONTH))
-				+ "/"
-				+ this.cal.get(Calendar.YEAR);
-		String colTitle = this.getNameforNum(this.cal
-				.get(Calendar.DAY_OF_WEEK)) + " (" + numDate + ")";
+				+ String.format("%02d", this.cal.get(Calendar.DAY_OF_MONTH))
+				+ "/" + this.cal.get(Calendar.YEAR);
+		String colTitle = this
+				.getNameforNum(this.cal.get(Calendar.DAY_OF_WEEK))
+				+ " ("
+				+ numDate + ")";
 		return colTitle;
 	}
 
@@ -246,9 +254,11 @@ public class CalendarGUI extends javax.swing.JFrame {
 
 	}
 
-	// Code Smell Switch Statement
-	// Because this isn't part of day this code shows up in varing forms in
-	// different classes and so does getting and int
+	// Swap 1 - Team 03 - Code Sniffing
+	// SMELL: Switch Statement - Because this isn't part of day this code shows
+	// up in varying forms in different classes and so does getting an int from
+	// a day. The switch could be removed by using Java's standard library
+	// representations instead of passing around ints and strings.
 	private String getNameforNum(int n) {
 		switch (n) {
 		case (1):
@@ -269,7 +279,10 @@ public class CalendarGUI extends javax.swing.JFrame {
 		return null;
 	}
 
-	// Code Smell Long Method
+	// Swap 1 - Team 03 - Code Sniffing
+
+	// SMELL: Long Method - This method initializes every component on the GUI,
+	// which makes it pages long and confusing as all get out.
 	private void initComponents() {
 
 		this.monthTitle = new javax.swing.JLabel();
