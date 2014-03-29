@@ -1,0 +1,29 @@
+function monthBack() {	if(monthIndex > 0) {
+		monthIndex--;
+	document.getElementById('middle').innerHTML = tables[monthIndex];
+	document.getElementById('monthName').innerHTML = '<input onclick=\'monthBack()\' type=\'submit\' name=\'monthBack\' id=\'monthBack\' value=\'&lt;\' /> ' + months[monthIndex][0] + 		' <input type=\'submit\' name=\'monthAhead\' id=\'monthAhead\' value=\'&gt;\' onclick=\'monthAhead()\' />';
+		var numCols = months[monthIndex][1].length;
+		for(var c = 0; c<numCols; c++) {
+			var numRows = months[monthIndex][1][c].length;
+			for(var r = 0; r<numRows; r++) {
+				document.getElementById(c + ',' + r).innerHTML = months[monthIndex][1][c][r];
+			}
+		}
+	}
+}
+function monthAhead() {
+	if(monthIndex < months.length - 1) {
+		monthIndex++;
+		document.getElementById('middle').innerHTML = tables[monthIndex];
+		document.getElementById('monthName').innerHTML = '<input onclick=\'monthBack()\' type=\'submit\' name=\'monthBack\' id=\'monthBack\' value=\'&lt;\' /> ' + months[monthIndex][0] + 		' <input type=\'submit\' name=\'monthAhead\' id=\'monthAhead\' value=\'&gt;\' onclick=\'monthAhead()\' />';
+		var numCols = months[monthIndex][1].length;
+		for(var c = 0; c<numCols; c++) {
+			var numRows = months[monthIndex][1][c].length;
+			for(var r = 0; r<numRows; r++) {
+				document.getElementById(c + ',' + r).innerHTML = months[monthIndex][1][c][r];
+			}
+		}
+	}
+}
+</script>
+</head><body><table width='100%' border='0' id='container'>  <tr>   <td colspan='3' id='head'><img src='images/head.gif' width='500' height='150' alt='header' /></td> </tr> <tr>   <td width='15%' rowspan='2' id='left'>&nbsp;</td>   <td height='84' id='monthName'></td>   <td width='19%' rowspan='2' id='right'>&nbsp;</td> </tr> <tr>   <td width='66%' height='606' id='middle'></td></tr></table></td></tr><tr><td colspan='3' id='foot'>&nbsp;</td></tr></table></body></html>

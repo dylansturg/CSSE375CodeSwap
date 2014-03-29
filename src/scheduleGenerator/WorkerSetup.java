@@ -262,6 +262,7 @@ public class WorkerSetup extends javax.swing.JFrame {
 	// It is quite long and would be improved if it was
 	// broken into a couple smaller methods.
 
+	// Team3-Swap2 Refactored Long Method
 	/*
 	 * Refactoring for enhancement from bad smell - Extract Method Team3-Swap2
 	 * 

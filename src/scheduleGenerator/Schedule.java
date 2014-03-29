@@ -23,7 +23,7 @@ public class Schedule extends Thread implements Serializable {
 	private boolean workerForEveryJob = true;
 
 	// Bug fix
-	// Swap2-team3
+	// Team3-Swap2
 	public boolean isWorkerForEveryJob() {
 		return workerForEveryJob;
 	}
