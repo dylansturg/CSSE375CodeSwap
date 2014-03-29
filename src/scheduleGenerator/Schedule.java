@@ -90,7 +90,15 @@ public class Schedule extends Thread implements Serializable {
 		int daysInMonth = 0;
 		ArrayList<Integer> numOfJobs = new ArrayList<Integer>();
 
-		CreatScheduleForMonth(daysInMonth, numOfJobs,
+		// Team3-Swap2 Bug Fix
+		/*
+		 * There was a bug where the daysInMonth was not set correctly and so
+		 * when the HTML was generated it did not have any of the jobs for that
+		 * month within the HTML page.
+		 * 
+		 * This bug fix added the feature of displaying jobs on a HTML webpage.
+		 */
+		daysInMonth = CreatScheduleForMonth(daysInMonth, numOfJobs,
 				this.cal.get(Calendar.MONTH));
 
 		HTMLGenerator.makeTable(daysInMonth, numOfJobs);
@@ -105,18 +113,22 @@ public class Schedule extends Thread implements Serializable {
 	}
 
 	// SWAP 1, TEAM 2
-	private void CreatScheduleForMonth(int daysInMonth,
+	private int CreatScheduleForMonth(int daysInMonth,
 			ArrayList<Integer> numOfJobs, int currentMonth) {
 		while (currentMonth == this.cal.get(Calendar.MONTH)) {
 			for (Day day : this.days) {
 				if (this.cal.get(Calendar.DAY_OF_WEEK) == this.numForName(day
 						.getNameOfDay())) {
 					ProcessDay(day, daysInMonth, numOfJobs);
+					// Team3-Swap2
+					daysInMonth++;
 					break;
 				}
 			}
 			this.cal.add(Calendar.DATE, 1);
 		}
+		// Team3-Swap2
+		return daysInMonth;
 	}
 
 	// SWAP 1, TEAM 2

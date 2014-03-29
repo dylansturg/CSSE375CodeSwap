@@ -5,6 +5,7 @@
 package scheduleGenerator;
 
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -256,67 +257,29 @@ public class Config extends javax.swing.JFrame {
 	 */
 	@SuppressWarnings("unchecked")
 	// SWAP 1, TEAM 2
-	// Team3-Swap2 Bug Fix
+	// Team3-Swap2 Additional Feature
 	/*
-	 * There was a bug where whenever you checked a new day it would erase all
-	 * of the previous jobs entered. There was also another bug where whenever
-	 * you added a new job to any day it would add it to all of the days.
+	 * Their original feature was sorting the days of the weeks so that no
+	 * matter which order you checked the different day boxes sunday would come
+	 * before monday and etc. They also forced the user to have the same jobs on
+	 * the different days of the week, so if there was a Lecturing job on a
+	 * Sunday there would be a Lecturing job on every other checked day of the
+	 * week.
 	 * 
-	 * This bug fix enables people to do actual scheduling where jobs don't have
-	 * to occur on every day.
+	 * This additional feature allows you to create jobs on different days so
+	 * for example you could have Lecturing on Sunday and Flying on Monday and
+	 * don't have to Lecture on a Monday.
 	 */
+	// Further Elaboration
 	private void weekCheckActionPerformed(java.awt.event.ActionEvent evt) {
 		for (int i = 0; i < this.data.WeekCheck.length; i++) {
 			if (data.WeekCheck[i].isSelected()) {
 				if (this.data.firstSelection) {
 					stretch();
 				}
-				// Team3-Swap2 Bug Fix
-
-				if (this.data.models[i] == null) {
-					this.data.models[i] = new DefaultListModel<Object>();
-				}
-				// Team3-Swap2 Bug Fix
-				this.data.WeekJobList[i].setModel(this.data.models[i]);
-				this.data.WeekScrollPane[i]
-						.setViewportView(this.data.WeekJobList[i]);
-				this.data.WeekJobName[i].setColumns(20);
-				this.data.WeekLabel[i].setText("Job Name:");
-				this.data.WeekAddJob[i].setText("Add Job");
-				final int k = i;
-				this.data.WeekAddJob[i]
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							// Team3-Swap2 Bug Fix
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								if (!Config.this.data.WeekJobName[k].getText()
-										.isEmpty()) {
-									Config.this.data.models[k]
-											.addElement(Config.this.data.WeekJobName[k]
-													.getText());
-									Config.this.data.WeekJobList[k]
-											.setModel(Config.this.data.models[k]);
-									Config.this.data.WeekJobName[k].setText("");
-								}
-							}
-						});
-
-				this.data.WeekDeleteJob[i].setText("Delete Job");
-				this.data.WeekDeleteJob[i]
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							// Team3-Swap2 Bug Fix
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								while (!Config.this.data.WeekJobList[k]
-										.isSelectionEmpty()) {
-									int n = Config.this.data.WeekJobList[k]
-											.getSelectedIndex();
-									Config.this.data.models[k].remove(n);
-								}
-							}
-						});
+				// Further Elaboration
+				// Team3-Swap2 Additional Feature - Extract Method
+				setupJobMenu(i);
 
 				javax.swing.GroupLayout weekTabLayout = new javax.swing.GroupLayout(
 						this.data.WeekTab[i]);
@@ -423,6 +386,68 @@ public class Config extends javax.swing.JFrame {
 		}
 	}
 
+	// Team3-Swap2 Additional Feature
+	// Further Elaboration
+	private void setupJobMenu(int day) {
+		if (this.data.models[day] == null) {
+			this.data.models[day] = new DefaultListModel<Object>();
+		}
+		// Team3-Swap2 Additional Feature
+		// Further Elaboration
+		this.data.WeekJobList[day].setModel(this.data.models[day]);
+		this.data.WeekScrollPane[day]
+				.setViewportView(this.data.WeekJobList[day]);
+		this.data.WeekJobName[day].setColumns(20);
+		this.data.WeekLabel[day].setText("Job Name:");
+		this.data.WeekAddJob[day].setText("Add Job");
+		final int k = day;
+		// Team3-Swap2 Additional Feature - Extract Method
+		// Further Elaboration
+		this.data.WeekAddJob[day]
+				.addActionListener(createAddJobActionListener(k));
+
+		this.data.WeekDeleteJob[day].setText("Delete Job");
+		// Team3-Swap2 Additional Feature - Extract Method
+		// Further Elaboration
+		this.data.WeekDeleteJob[day]
+				.addActionListener(createDeleteJobActionListener(k));
+	}
+
+	// Team3-Swap2 Further Elaboration
+	private ActionListener createDeleteJobActionListener(final int day) {
+		return new java.awt.event.ActionListener() {
+			@Override
+			// Team3-Swap2 Additional Feature
+			// Further Elaboration
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				while (!Config.this.data.WeekJobList[day].isSelectionEmpty()) {
+					int n = Config.this.data.WeekJobList[day]
+							.getSelectedIndex();
+					Config.this.data.models[day].remove(n);
+				}
+			}
+		};
+	}
+
+	// Team3-Swap2 Further Elaboration
+	private ActionListener createAddJobActionListener(final int day) {
+		return new java.awt.event.ActionListener() {
+			@Override
+			// Team3-Swap2 Additional Feature
+			// Further Elaboration
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				if (!Config.this.data.WeekJobName[day].getText().isEmpty()) {
+					Config.this.data.models[day]
+							.addElement(Config.this.data.WeekJobName[day]
+									.getText());
+					Config.this.data.WeekJobList[day]
+							.setModel(Config.this.data.models[day]);
+					Config.this.data.WeekJobName[day].setText("");
+				}
+			}
+		};
+	}
+
 	/**
 	 * @param evt
 	 */
@@ -432,7 +457,8 @@ public class Config extends javax.swing.JFrame {
 		for (int i = 0; i < this.data.WeekCheck.length; i++) {
 			if (this.data.WeekCheck[i].isSelected()) {
 				ArrayList<Object> day = new ArrayList<Object>();
-				// Team3-Swap2 bug fix jobs not being stored correctly per day
+				// Team3-Swap2 Additional Feature
+				// Further Elaboration
 				List<Object> jobs = Arrays
 						.asList(this.data.models[i].toArray());
 				day.addAll(jobs);
