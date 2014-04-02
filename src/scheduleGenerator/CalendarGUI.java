@@ -1,5 +1,8 @@
 package scheduleGenerator;
 
+import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -155,9 +158,35 @@ public class CalendarGUI extends javax.swing.JFrame {
 					break;
 				}
 			}
+			// Swap 3 Team3
+			// Ehancement from refactoring
+			/*
+			 * Since Team2 didn't say what features could be enabled and several
+			 * of their refactorings were hard to generate features from Steve
+			 * said that we could pick areas that we refactored for our swap 2
+			 * and generate new features from them.
+			 * 
+			 * Thier refactoring enabled the table's logic to only need to be
+			 * modified in a single place.
+			 * 
+			 * Their refactoring made it easier to do this change because they
+			 * combined all the ways the table is created into a single method
+			 * so we only had to modify one place.
+			 * 
+			 * Our new feature added value to the system because it reduces the
+			 * system resource footprint and it also avoided any sort of
+			 * concurrency problems if the schedule was attempted to be
+			 * serialized at the same time.
+			 */
 			if (currentKey.equals("")) {
-				Thread t = new Thread(this.schedule);
-				t.start();
+				if (!scheduleThread.isAlive()) {
+					scheduleThread = new Thread(this.schedule);
+					scheduleThread.start();
+				}
+				if (!this.schedule.workerForEveryJob) {
+					break;
+				}
+
 				// this.schedule.calculateNextMonth();
 			}
 		}
@@ -602,7 +631,29 @@ public class CalendarGUI extends javax.swing.JFrame {
 	private void generateTextActionPerformed(java.awt.event.ActionEvent evt) {
 		NavigableSet<String> keySet = this.scheduleMap.navigableKeySet();
 		String textOutput = new String();
-		File readout = new File("Calendar.txt");
+
+		// Swap 3 Team 3
+		// Enhancement from refactoring #3
+		/*
+		 * Added a concrete feature that allows the user to select what the name
+		 * of the file and location should be for the textual calendar file.
+		 * 
+		 * Their refactoring was reasonable and beneficial but was had minimal
+		 * improvement on the code base. All they did was move 3 methods that
+		 * contained a return statement in each to where the method was called
+		 * and the name of the statement was already self explanatory so there
+		 * was little additional clarity gained.
+		 * 
+		 * The refactoring was not very helpful for the enhancement because we
+		 * did not do anything involved with the code they moved around.
+		 * 
+		 * Our feature added value to the system because now the user would have
+		 * to rename and move the Calendar.txt if they wanted to have multiple
+		 * calendar files as well as they may want to have saved it elsewhere
+		 * (maybe the cloud).
+		 */
+		File readout = getUserSelectedFile(this, "Calendar.txt");
+
 		ArrayList<String> dutyRows = new ArrayList<String>();
 
 		int column = 1;
@@ -640,6 +691,20 @@ public class CalendarGUI extends javax.swing.JFrame {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
+	}
+
+	// Swap 3 Team 3
+	// ENHANCEMENT FROM REFACTORING #3
+	public static File getUserSelectedFile(Frame parent, String defaultFileName) {
+		try {
+			FileDialog fDialog = new FileDialog(parent, "Save", FileDialog.SAVE);
+			fDialog.setVisible(true);
+			String path = fDialog.getDirectory() + fDialog.getFile();
+			return new File(path);
+		} catch (Exception e) {
+			return new File(defaultFileName);
+		}
+
 	}
 
 	/**
@@ -732,4 +797,5 @@ public class CalendarGUI extends javax.swing.JFrame {
 	private javax.swing.JMenuItem undoChanges;
 	private javax.swing.JMenu scheduleMenu;
 	private javax.swing.JMenuItem schedulePreferredItem;
+	private Thread scheduleThread;
 }
