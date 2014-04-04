@@ -210,4 +210,8 @@ public class Main {
             recallConfig.close();
         }
 	}
+
+	public static void resetWorkerSetup() {
+		wSet = workers == null ? new WorkerSetup() : new WorkerSetup(workers);
+	}
 }
