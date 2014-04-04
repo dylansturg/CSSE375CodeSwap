@@ -82,9 +82,14 @@ public class Main {
 	 * 
 	 */
 	public static void toggleWorkerSetup() {
-		if (wSet != null) {
-			wSet.setVisible(!wSet.isVisible());
+    	// Swap 3 Team 3
+    	// ENHANCEMENT FROM REFACTORING
+    	// Moved Creation of worker setup
+		
+		if (wSet == null) {
+			wSet = new WorkerSetup();
 		}
+		wSet.setVisible(!wSet.isVisible());
 	}
 
 	/**

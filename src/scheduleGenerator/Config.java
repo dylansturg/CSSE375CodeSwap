@@ -305,7 +305,11 @@ public class Config extends javax.swing.JFrame {
     		}
     		if(hasJobs) {
 		    	Main.setDays(days);
-		    	Main.wSet = new WorkerSetup();
+		    	
+		    	// Swap 3 Team 3
+		    	// ENHANCEMENT FROM REFACTORING
+		    	// Moved Creation of worker setup
+
 		    	Main.toggleWorkerSetup();
 		    	Main.config = this;
 		    	Main.toggleConfig();

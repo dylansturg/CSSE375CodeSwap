@@ -158,7 +158,7 @@ public class CalendarGUI extends javax.swing.JFrame {
 					break;
 				}
 			}
-			// Swap 3 Team3
+			// Swap 3 Team 3
 			// Ehancement from refactoring
 			/*
 			 * Since Team2 didn't say what features could be enabled and several
@@ -605,6 +605,28 @@ public class CalendarGUI extends javax.swing.JFrame {
 	 * @param evt
 	 */
 	private void editDaysActionPerformed(java.awt.event.ActionEvent evt) {
+
+		// Swap 3 Team 3
+		// ENHANCEMENT FROM REFACTORING
+		// Moved Creation of worker setup
+
+		/*
+		 * Their refactoring (the middle man changes) did not directly enable
+		 * new features, but made adding new features easier by shortening the
+		 * chain of delegation.
+		 * 
+		 * The refactoring was mildly successful because we did not have to
+		 * search for as many methods in order to find the right place to make
+		 * changes.
+		 * 
+		 * The additional feature prevents the system from forgetting the
+		 * already entered workers and their preferred tasks when editing days
+		 * from the calendar screen. This feature is especially valuable when
+		 * there are over 4 workers with tasks, because adding in all of the
+		 * workers and selecting their tasks is a lot of duplicate effort.
+		 */
+
+		Main.wSet = new WorkerSetup(this.schedule.getWorkers());
 		Main.config = new Config(Main.getDays());
 		Main.toggleConfig();
 		Main.toggleCalendar();

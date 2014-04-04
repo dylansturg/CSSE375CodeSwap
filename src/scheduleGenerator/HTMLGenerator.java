@@ -38,7 +38,7 @@ public class HTMLGenerator {
 				+ (table.subSequence(0, table.length() - 1) + "];") + bottom
 				+ foot;
 
-		// Swap3, Team3
+		// Swap 3 Team 3
 		// Enhancement from refactoring #5
 
 		/*
